@@ -1,0 +1,19 @@
+:root {
+  --azul-oscuro: #152A55;
+  --azul-medio: #3D6AB0;
+  --blanco: #FFFFFF;
+  --amarillo: #F0D447;
+  --celeste-claro: #8EB6E4;
+  --gris-claro: #DDE5F0;
+  --verde-success: #22C55E;
+  --rojo-warning: #EF4444;
+  --gris-texto: #64748B;
+  --fondo: #F8FAFC;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--fondo);
+  color: var(--azul-oscuro);
+  line-height: 1.6;
+}

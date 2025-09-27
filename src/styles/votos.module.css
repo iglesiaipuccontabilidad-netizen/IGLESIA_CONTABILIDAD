@@ -1,0 +1,157 @@
+.votosContainer {
+  padding: 2rem;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  box-shadow: var(--shadow-elevation-low);
+}
+
+.votosTitle {
+  color: var(--color-text-primary);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.votosTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+.votosTable th,
+.votosTable td {
+  text-align: left;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.votosTable th {
+  background-color: var(--color-primary-light);
+  color: var(--color-text-on-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.votosTable tr:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.votosTable td {
+  color: var(--color-text-secondary);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btnPrimary,
+.btnSecondary {
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btnPrimary {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.btnPrimary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.btnSecondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text-on-secondary);
+  border: 1px solid var(--color-secondary);
+}
+
+.btnSecondary:hover {
+  background-color: var(--color-secondary-dark);
+  border-color: var(--color-secondary-dark);
+}
+
+.estadoBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+}
+
+.estadoBadge.activo {
+  background-color: #28a745; /* Green */
+}
+
+.estadoBadge.finalizado {
+  background-color: #6c757d; /* Gray */
+}
+
+.estadoBadge.pendiente {
+  background-color: #ffc107; /* Yellow */
+  color: #343a40;
+}
+
+.votoDetalleContainer {
+  padding: 2rem;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  box-shadow: var(--shadow-elevation-low);
+  color: var(--color-text-primary);
+}
+
+.votoDetalleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.votoDetalleTitle {
+  font-size: 2.2rem;
+  color: var(--color-primary);
+}
+
+.votoDetalleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.votoDetalleCard {
+  background-color: var(--color-bg-primary);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow-elevation-low);
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+}
+
+.votoDetalleCard p {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.votoDetalleCard strong {
+  color: var(--color-text-secondary);
+  margin-right: 0.5rem;
+}

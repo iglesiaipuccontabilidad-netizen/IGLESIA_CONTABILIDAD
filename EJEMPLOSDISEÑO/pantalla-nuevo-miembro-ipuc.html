@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Miembro - Sistema de Votos IPUC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul-oscuro: #152A55;
+            --azul-medio: #3D6AB0;
+            --blanco: #FFFFFF;
+            --amarillo: #F0D447;
+            --celeste-claro: #8EB6E4;
+            --gris-claro: #DDE5F0;
+            --verde-success: #22C55E;
+            --rojo-warning: #EF4444;
+            --gris-texto: #64748B;
+            --fondo: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--fondo);
+            color: var(--azul-oscuro);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(21, 42, 85, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: var(--blanco);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--azul-oscuro);
+            font-size: 1.2rem;
+        }
+
+        .header-title {
+            color: var(--blanco);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            color: var(--celeste-claro);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--celeste-claro);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--blanco);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--blanco);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--gris-texto);
+            font-size: 1.1rem;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: var(--blanco);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(21, 42, 85, 0.1);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gris-claro);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-grid.single-column {
+            grid-template-columns: 1fr;
+        }
+
+        /* Form Groups */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--azul-oscuro);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .required {
+            color: var(--rojo-warning);
+        }
+
+        /* Form Controls */
+        .form-control {
+            padding: 1rem;
+            border: 2px solid var(--gris-claro);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--azul-medio);
+            box-shadow: 0 0 0 3px rgba(61, 106, 176, 0.1);
+        }
+
+        .form-control:invalid:not(:focus):not(:placeholder-shown) {
+            border-color: var(--rojo-warning);
+        }
+
+        .form-control:valid:not(:focus):not(:placeholder-shown) {
+            border-color: var(--verde-success);
+        }
+
+        /* Select Styling */
+        .form-select {
+            padding: 1rem;
+            border: 2px solid var(--gris-claro);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: var(--blanco);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--azul-medio);
+            box-shadow: 0 0 0 3px rgba(61, 106, 176, 0.1);
+        }
+
+        /* Textarea */
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Input with Icon */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris-texto);
+            font-size: 1.2rem;
+        }
+
+        .input-with-icon .form-control {
+            padding-left: 3rem;
+        }
+
+        /* Help Text */
+        .form-help {
+            font-size: 0.85rem;
+            color: var(--gris-texto);
+            margin-top: 0.3rem;
+        }
+
+        /* Validation Messages */
+        .form-error {
+            color: var(--rojo-warning);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .form-success {
+            color: var(--verde-success);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gris-claro);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--amarillo) 0%, #E6C547 100%);
+            color: var(--azul-oscuro);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(240, 212, 71, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--azul-medio);
+            color: var(--blanco);
+        }
+
+        .btn-secondary:hover {
+            background: var(--azul-oscuro);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--gris-texto);
+            border: 2px solid var(--gris-claro);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--azul-medio);
+            color: var(--azul-medio);
+        }
+
+        /* Preview Avatar */
+        .avatar-preview {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--celeste-claro) 100%);
+            color: var(--blanco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            border: 4px solid var(--blanco);
+            box-shadow: 0 4px 15px rgba(61, 106, 176, 0.2);
+        }
+
+        /* Loading State */
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--azul-oscuro);
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(135deg, var(--verde-success) 0%, #16A34A 100%);
+            color: var(--blanco);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Custom Checkbox/Radio Styles */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gris-claro);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .custom-checkbox input:checked + .checkmark {
+            background: var(--azul-medio);
+            border-color: var(--azul-medio);
+        }
+
+        .custom-checkbox input:checked + .checkmark::after {
+            display: block;
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid var(--blanco);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Animation for form */
+        .form-container {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">IPUC</div>
+                <div>
+                    <h1 class="header-title">Nuevo Miembro</h1>
+                    <div class="breadcrumb">
+                        <a href="#" onclick="history.back()">Dashboard</a> > 
+                        <a href="#" onclick="history.back()">Miembros</a> > 
+                        <span>Nuevo Miembro</span>
+                    </div>
+                </div>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Admin Principal</div>
+                    <div class="user-role">Administrador</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2 class="page-title">Registrar Nuevo Miembro</h2>
+            <p class="page-subtitle">Complete la información del nuevo miembro de la congregación</p>
+        </div>
+
+        <!-- Success Message -->
+        <div id="success-message" class="success-message">
+            <h3>✅ ¡Miembro registrado exitosamente!</h3>
+            <p>El nuevo miembro ha sido agregado al sistema correctamente.</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <form id="new-member-form" onsubmit="handleSubmit(event)">
+                <!-- Avatar Preview -->
+                <div class="avatar-preview">
+                    <div class="avatar-circle" id="avatar-preview">
+                        👤
+                    </div>
+                </div>
+
+                <!-- Información Personal -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">👤</span>
+                        Información Personal
+                    </h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="nombres">
+                                Nombres <span class="required">*</span>
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    id="nombres" 
+                                    name="nombres" 
+                                    class="form-control" 
+                                    placeholder="Ej: María José"
+                                    required
+                                    oninput="updateAvatar()"
+                                >
+                            </div>
+                            <div class="form-error" id="nombres-error">Por favor ingrese los nombres</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="apellidos">
+                                Apellidos <span class="required">*</span>
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    id="apellidos" 
+                                    name="apellidos" 
+                                    class="form-control" 
+                                    placeholder="Ej: González López"
+                                    required
+                                    oninput="updateAvatar()"
+                                >
+                            </div>
+                            <div class="form-error" id="apellidos-error">Por favor ingrese los apellidos</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="tipo-documento">
+                                Tipo de Documento <span class="required">*</span>
+                            </label>
+                            <select id="tipo-documento" name="tipo-documento" class="form-select" required>
+                                <option value="">Seleccione...</option>
+                                <option value="CC">Cédula de Ciudadanía (CC)</option>
+                                <option value="TI">Tarjeta de Identidad (TI)</option>
+                                <option value="CE">Cédula de Extranjería (CE)</option>
+                                <option value="PA">Pasaporte (PA)</option>
+                            </select>
+                            <div class="form-error" id="tipo-documento-error">Por favor seleccione el tipo de documento</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="numero-documento">
+                                Número de Documento <span class="required">*</span>
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📄</span>
+                                <input 
+                                    type="text" 
+                                    id="numero-documento" 
+                                    name="numero-documento" 
+                                    class="form-control" 
+                                    placeholder="Ej: 1.234.567.890"
+                                    required
+                                    pattern="[0-9.,]+"
+                                >
+                            </div>
+                            <div class="form-help">Ingrese solo números, puede usar puntos y comas</div>
+                            <div class="form-error" id="numero-documento-error">Por favor ingrese un número de documento válido</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="fecha-nacimiento">
+                                Fecha de Nacimiento
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📅</span>
+                                <input 
+                                    type="date" 
+                                    id="fecha-nacimiento" 
+                                    name="fecha-nacimiento" 
+                                    class="form-control"
+                                    max="2024-12-31"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="genero">
+                                Género
+                            </label>
+                            <select id="genero" name="genero" class="form-select">
+                                <option value="">Seleccione...</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="femenino">Femenino</option>
+                                <option value="otro">Otro</option>
+                                <option value="prefiero-no-decir">Prefiero no decir</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">📞</span>
+                        Información de Contacto
+                    </h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="telefono">
+                                Teléfono Principal <span class="required">*</span>
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📱</span>
+                                <input 
+                                    type="tel" 
+                                    id="telefono" 
+                                    name="telefono" 
+                                    class="form-control" 
+                                    placeholder="Ej: 300-123-4567"
+                                    required
+                                    pattern="[0-9-]+"
+                                >
+                            </div>
+                            <div class="form-help">Formato: 300-123-4567</div>
+                            <div class="form-error" id="telefono-error">Por favor ingrese un teléfono válido</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="telefono-alternativo">
+                                Teléfono Alternativo
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📞</span>
+                                <input 
+                                    type="tel" 
+                                    id="telefono-alternativo" 
+                                    name="telefono-alternativo" 
+                                    class="form-control" 
+                                    placeholder="Ej: 301-987-6543"
+                                    pattern="[0-9-]+"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="email">
+                                Correo Electrónico
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📧</span>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-control" 
+                                    placeholder="Ej: maria.gonzalez@email.com"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="whatsapp">
+                                WhatsApp
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">💬</span>
+                                <input 
+                                    type="tel" 
+                                    id="whatsapp" 
+                                    name="whatsapp" 
+                                    class="form-control" 
+                                    placeholder="Ej: 300-123-4567"
+                                    pattern="[0-9-]+"
+                                >
+                            </div>
+                            <div class="form-help">Si es diferente al teléfono principal</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label" for="direccion">
+                            Dirección
+                        </label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">🏠</span>
+                            <input 
+                                type="text" 
+                                id="direccion" 
+                                name="direccion" 
+                                class="form-control" 
+                                placeholder="Ej: Calle 123 #45-67, Barrio Los Pinos"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Ministerial -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">⛪</span>
+                        Información Ministerial
+                    </h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="fecha-conversion">
+                                Fecha de Conversión
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">✨</span>
+                                <input 
+                                    type="date" 
+                                    id="fecha-conversion" 
+                                    name="fecha-conversion" 
+                                    class="form-control"
+                                    max="2024-12-31"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="fecha-bautismo">
+                                Fecha de Bautismo
+                            </label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">💧</span>
+                                <input 
+                                    type="date" 
+                                    id="fecha-bautismo" 
+                                    name="fecha-bautismo" 
+                                    class="form-control"
+                                    max="2024-12-31"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="ministerio">
+                                Ministerio/Departamento
+                            </label>
+                            <select id="ministerio" name="ministerio" class="form-select">
+                                <option value="">Seleccione...</option>
+                                <option value="juventud">Juventud</option>
+                                <option value="damas">Damas</option>
+                                <option value="caballeros">Caballeros</option>
+                                <option value="infantil">Ministerio Infantil</option>
+                                <option value="musica">Música y Alabanza</option>
+                                <option value="evangelismo">Evangelismo</option>
+                                <option value="intercesion">Intercesión</option>
+                                <option value="ujeres">Ujeres</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="estado-miembro">
+                                Estado del Miembro <span class="required">*</span>
+                            </label>
+                            <select id="estado-miembro" name="estado-miembro" class="form-select" required>
+                                <option value="">Seleccione...</option>
+                                <option value="activo">Activo</option>
+                                <option value="visitante">Visitante</option>
+                                <option value="nuevo-convertido">Nuevo Convertido</option>
+                                <option value="en-disciplina">En Disciplina</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                            <div class="form-error" id="estado-miembro-error">Por favor seleccione el estado del miembro</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Adicional -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">📝</span>
+                        Información Adicional
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="observaciones">
+                            Observaciones
+                        </label>
+                        <textarea 
+                            id="observaciones" 
+                            name="observaciones" 
+                            class="form-control form-textarea" 
+                            placeholder="Información adicional relevante sobre el miembro..."
+                            rows="4"
+                        ></textarea>
+                        <div class="form-help">Cualquier información adicional que considere importante</div>
+                    </div>
+
+                    <!-- Checkbox para notificaciones -->
+                    <div class="checkbox-group">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="notificaciones" id="notificaciones" checked>
+                            <span class="checkmark"></span>
+                        </label>
+                        <label for="notificaciones" class="form-label" style="cursor: pointer;">
+                            Enviar notificaciones sobre votos y actividades
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="history.back()">
+                        ❌ Cancelar
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+                        💾 Guardar Borrador
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        ✅ Registrar Miembro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Update avatar preview
+        function updateAvatar() {
+            const nombres = document.getElementById('nombres').value.trim();
+            const apellidos = document.getElementById('apellidos').value.trim();
+            const avatar = document.getElementById('avatar-preview');
+            
+            if (nombres || apellidos) {
+                // Get first letter of first name and first letter of last name
+                const nombreInicial = nombres ? nombres.split(' ')[0][0] || '' : '';
+                const apellidoInicial = apellidos ? apellidos.split(' ')[0][0] || '' : '';
+                const iniciales = (nombreInicial + apellidoInicial).toUpperCase();
+                avatar.textContent = iniciales || '👤';
+            } else {
+                avatar.textContent = '👤';
+            }
+        }

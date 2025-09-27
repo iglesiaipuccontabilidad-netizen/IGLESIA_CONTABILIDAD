@@ -1,0 +1,91 @@
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.member-card {
+  background: var(--blanco);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+  transition: all 0.3s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(21, 42, 85, 0.12);
+}
+
+.member-header {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.member-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gris-claro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--azul-medio);
+}
+
+.member-info h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--azul-oscuro);
+}
+
+.member-cedula {
+  color: var(--gris-texto);
+  font-size: 0.9rem;
+}
+
+.member-details {
+  border-top: 1px solid var(--gris-claro);
+  padding-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.member-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-detail-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gris-texto);
+  margin-bottom: 0.3rem;
+}
+
+.member-detail-value {
+  font-weight: 600;
+  color: var(--azul-oscuro);
+}
+
+.member-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.votos-badge {
+  background: var(--azul-medio);
+  color: var(--blanco);
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}

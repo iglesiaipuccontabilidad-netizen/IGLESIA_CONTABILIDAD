@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Votos IPUC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul-oscuro: #152A55;
+            --azul-medio: #3D6AB0;
+            --blanco: #FFFFFF;
+            --amarillo: #F0D447;
+            --celeste-claro: #8EB6E4;
+            --gris-claro: #DDE5F0;
+            --verde-success: #22C55E;
+            --rojo-warning: #EF4444;
+            --gris-texto: #64748B;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F8FAFC;
+            color: var(--azul-oscuro);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(21, 42, 85, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: var(--blanco);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--azul-oscuro);
+            font-size: 1.2rem;
+        }
+
+        .header-title {
+            color: var(--blanco);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--blanco);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .dropdown-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--blanco);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* KPIs Section */
+        .kpis-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+            border-left: 4px solid var(--azul-medio);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(21, 42, 85, 0.12);
+        }
+
+        .kpi-card.total-comprometido {
+            border-left-color: var(--azul-medio);
+        }
+
+        .kpi-card.total-recaudado {
+            border-left-color: var(--verde-success);
+        }
+
+        .kpi-card.total-pendiente {
+            border-left-color: var(--amarillo);
+        }
+
+        .kpi-card.votos-activos {
+            border-left-color: var(--celeste-claro);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gris-texto);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .icon-comprometido {
+            background: rgba(61, 106, 176, 0.1);
+            color: var(--azul-medio);
+        }
+
+        .icon-recaudado {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--verde-success);
+        }
+
+        .icon-pendiente {
+            background: rgba(240, 212, 71, 0.1);
+            color: #B45309;
+        }
+
+        .icon-votos {
+            background: rgba(142, 182, 228, 0.1);
+            color: var(--celeste-claro);
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-trend {
+            font-size: 0.8rem;
+            color: var(--verde-success);
+        }
+
+        /* Content Section */
+        .content-section {
+            display: grid;
+            grid-template-columns: 70% 30%;
+            gap: 2rem;
+        }
+
+        /* Votos Activos */
+        .votos-section {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gris-claro);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+        }
+
+        /* Filtros */
+        .filtros {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--azul-medio);
+        }
+
+        .filter-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Tabla */
+        .tabla-container {
+            overflow-x: auto;
+        }
+
+        .tabla {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tabla th {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            color: var(--blanco);
+            padding: 1rem 0.8rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tabla th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .tabla th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .tabla td {
+            padding: 1rem 0.8rem;
+            border-bottom: 1px solid var(--gris-claro);
+            vertical-align: middle;
+        }
+
+        .tabla tr:hover {
+            background: rgba(61, 106, 176, 0.05);
+        }
+
+        .miembro-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--celeste-claro);
+            color: var(--blanco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .miembro-detalles h4 {
+            font-weight: 600;
+            color: var(--azul-oscuro);
+            margin-bottom: 0.2rem;
+        }
+
+        .miembro-cedula {
+            font-size: 0.8rem;
+            color: var(--gris-texto);
+        }
+
+        .proposito-tag {
+            background: var(--amarillo);
+            color: var(--azul-oscuro);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .monto {
+            font-weight: 700;
+            color: var(--azul-oscuro);
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--gris-claro);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--verde-success) 0%, var(--celeste-claro) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--azul-oscuro);
+            min-width: 40px;
+        }
+
+        .fecha-limite {
+            color: var(--gris-texto);
+            font-size: 0.9rem;
+        }
+
+        .fecha-limite.urgente {
+            color: var(--rojo-warning);
+            font-weight: 600;
+        }
+
+        .btn-accion {
+            background: var(--azul-medio);
+            color: var(--blanco);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-accion:hover {
+            background: var(--azul-oscuro);
+            transform: translateY(-1px);
+        }
+
+        /* Panel de Seguimiento */
+        .seguimiento-panel {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+        }
+
+        .top-deudores {
+            margin-bottom: 2rem;
+        }
+
+        .deudor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            background: rgba(240, 212, 71, 0.1);
+            border-left: 3px solid var(--amarillo);
+        }
+
+        .deudor-info h4 {
+            font-weight: 600;
+            color: var(--azul-oscuro);
+            margin-bottom: 0.3rem;
+        }
+
+        .deuda-monto {
+            color: var(--rojo-warning);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .dias-sin-abono {
+            font-size: 0.8rem;
+            color: var(--gris-texto);
+        }
+
+        .btn-contactar {
+            background: var(--amarillo);
+            color: var(--azul-oscuro);
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-contactar:hover {
+            background: #E6C547;
+            transform: translateY(-1px);
+        }
+
+        .alertas-calendario {
+            background: rgba(142, 182, 228, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .alerta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(142, 182, 228, 0.2);
+        }
+
+        .alerta-item:last-child {
+            border-bottom: none;
+        }
+
+        .alerta-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--amarillo);
+            color: var(--azul-oscuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .alerta-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--azul-oscuro);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .content-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .filtros {
+                flex-direction: column;
+            }
+
+            .filter-input {
+                min-width: auto;
+            }
+
+            .tabla-container {
+                font-size: 0.8rem;
+            }
+
+            .kpi-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .kpi-card, .votos-section, .seguimiento-panel {
+            animation: slideIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">IPUC</div>
+                <h1 class="header-title">Dashboard - Sistema de Votos</h1>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Admin Principal</div>
+                    <div class="user-role">Administrador</div>
+                </div>
+                <button class="dropdown-btn">Perfil ▼</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- KPIs Section -->
+        <section class="kpis-section">
+            <div class="kpi-card total-comprometido">
+                <div class="kpi-header">
+                    <div class="kpi-title">Total Comprometido</div>
+                    <div class="kpi-icon icon-comprometido">💰</div>
+                </div>
+                <div class="kpi-value">$15,450,000</div>
+                <div class="kpi-trend">↗ +12% este mes</div>
+            </div>
+
+            <div class="kpi-card total-recaudado">
+                <div class="kpi-header">
+                    <div class="kpi-title">Total Recaudado</div>
+                    <div class="kpi-icon icon-recaudado">✅</div>
+                </div>
+                <div class="kpi-value">$8,920,000</div>
+                <div class="kpi-trend">↗ 57.7% completado</div>
+            </div>
+
+            <div class="kpi-card total-pendiente">
+                <div class="kpi-header">
+                    <div class="kpi-title">Total Pendiente</div>
+                    <div class="kpi-icon icon-pendiente">⏳</div>
+                </div>
+                <div class="kpi-value">$6,530,000</div>
+                <div class="kpi-trend">42.3% por recaudar</div>
+            </div>
+
+            <div class="kpi-card votos-activos">
+                <div class="kpi-header">
+                    <div class="kpi-title">Votos Activos</div>
+                    <div class="kpi-icon icon-votos">📊</div>
+                </div>
+                <div class="kpi-value">127</div>
+                <div class="kpi-trend">↗ +8 nuevos</div>
+            </div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <!-- Lista de Votos Activos -->
+            <div class="votos-section">
+                <div class="section-header">
+                    <h2 class="section-title">Votos Activos</h2>
+                </div>
+
+                <!-- Filtros -->
+                <div class="filtros">
+                    <input type="text" class="filter-input" placeholder="🔍 Buscar por nombre o cédula...">
+                    <select class="filter-select">
+                        <option>Todos los propósitos</option>
+                        <option>Templo</option>
+                        <option>Misiones</option>
+                        <option>Evangelización</option>
+                        <option>Ministerio Infantil</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Ordenar por fecha límite</option>
+                        <option>Monto mayor a menor</option>
+                        <option>% completado</option>
+                    </select>
+                </div>
+
+                <!-- Tabla de Votos -->
+                <div class="tabla-container">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>Miembro</th>
+                                <th>Propósito</th>
+                                <th>Monto Total</th>
+                                <th>Recaudado</th>
+                                <th>Progreso</th>
+                                <th>Fecha Límite</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="miembro-info">
+                                        <div class="avatar">MG</div>
+                                        <div class="miembro-detalles">
+                                            <h4>María González</h4>
+                                            <div class="miembro-cedula">CC: 1.234.567</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="proposito-tag">Templo</span></td>
+                                <td class="monto">$500,000</td>
+                                <td class="monto">$350,000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 70%"></div>
+                                        </div>
+                                        <span class="progress-text">70%</span>
+                                    </div>
+                                </td>
+                                <td class="fecha-limite">15/Nov/2025</td>
+                                <td><button class="btn-accion">Ver</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="miembro-info">
+                                        <div class="avatar">JR</div>
+                                        <div class="miembro-detalles">
+                                            <h4>Juan Rodríguez</h4>
+                                            <div class="miembro-cedula">CC: 9.876.543</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="proposito-tag">Misiones</span></td>
+                                <td class="monto">$300,000</td>
+                                <td class="monto">$120,000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 40%"></div>
+                                        </div>
+                                        <span class="progress-text">40%</span>
+                                    </div>
+                                </td>
+                                <td class="fecha-limite urgente">28/Oct/2025</td>
+                                <td><button class="btn-accion">Ver</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="miembro-info">
+                                        <div class="avatar">AL</div>
+                                        <div class="miembro-detalles">
+                                            <h4>Ana López</h4>
+                                            <div class="miembro-cedula">CC: 5.555.555</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="proposito-tag">Evangelización</span></td>
+                                <td class="monto">$200,000</td>
+                                <td class="monto">$180,000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 90%"></div>
+                                        </div>
+                                        <span class="progress-text">90%</span>
+                                    </div>
+                                </td>
+                                <td class="fecha-limite">10/Dic/2025</td>
+                                <td><button class="btn-accion">Ver</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="miembro-info">
+                                        <div class="avatar">CM</div>
+                                        <div class="miembro-detalles">
+                                            <h4>Carlos Martínez</h4>
+                                            <div class="miembro-cedula">CC: 7.777.777</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="proposito-tag">Min. Infantil</span></td>
+                                <td class="monto">$150,000</td>
+                                <td class="monto">$45,000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 30%"></div>
+                                        </div>
+                                        <span class="progress-text">30%</span>
+                                    </div>
+                                </td>
+                                <td class="fecha-limite">20/Nov/2025</td>
+                                <td><button class="btn-accion">Ver</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Panel de Seguimiento -->
+            <div class="seguimiento-panel">
+                <div class="section-header">
+                    <h2 class="section-title">Seguimiento</h2>
+                </div>
+
+                <!-- Top Deudores -->
+                <div class="top-deudores">
+                    <h3 style="margin-bottom: 1rem; color: var(--azul-oscuro); font-size: 1.1rem;">Top Deudores</h3>
+                    
+                    <div class="deudor-item">
+                        <div class="deudor-info">
+                            <h4>Pedro Sánchez</h4>
+                            <div class="deuda-monto">Debe: $180,000</div>
+                            <div class="dias-sin-abono">15 días sin abono</div>
+                        </div>
+                    </div>
+
+                    <div class="deudor-item">
+                        <div class="deudor-info">
+                            <h4>Laura Jiménez</h4>
+                            <div class="deuda-monto">Debe: $160,000</div>
+                            <div class="dias-sin-abono">22 días sin abono</div>
+                        </div>
+                    </div>
+
+                    <div class="deudor-item">
+                        <div class="deudor-info">
+                            <h4>Roberto Díaz</h4>
+                            <div class="deuda-monto">Debe: $140,000</div>
+                            <div class="dias-sin-abono">8 días sin abono</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-contactar">📞 Contactar / Marcar Seguimiento</button>
+                </div>
+
+                <!-- Alertas y Calendario -->
+                <div class="alertas-calendario">
+                    <h3 style="margin-bottom: 1rem; color: var(--azul-oscuro); font-size: 1.1rem;">⏰ Próximos Vencimientos</h3>
+                    
+                    <div class="alerta-item">
+                        <div class="alerta-icon">!</div>
+                        <div class="alerta-text">
+                            <strong>Juan Rodríguez</strong><br>
+                            Vence en 7 días - $180,000 pendiente
+                        </div>
+                    </div>
+
+                    <div class="alerta-item">
+                        <div class="alerta-icon">!</div>
+                        <div class="alerta-text">
+                            <strong>Elena Castro</strong><br>
+                            Vence en 12 días - $95,000 pendiente
+                        </div>
+                    </div>
+
+                    <div class="alerta-item">
+                        <div class="alerta-icon">!</div>
+                        <div class="alerta-text">
+                            <strong>Miguel Torres</strong><br>
+                            Vence en 18 días - $120,000 pendiente
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,97 @@
+📌 Contexto del Proyecto: Sistema de Votos – IPUC
+
+Este proyecto es un Sistema de Votos y Compromisos Financieros para la Iglesia IPUC, desarrollado con las siguientes tecnologías:
+
+Frontend: Se parte de archivos HTML, CSS y JS ya generados (obtenidos desde Cloud), que contienen todo el diseño visual y las interfaces del sistema (Dashboard, gestión de votos, miembros, registro de nuevos miembros, etc.).
+
+Backend: Se debe implementar con Node.js + Express (recomendado) o framework similar, consumiendo los datos desde Supabase como base de datos.
+
+Base de Datos: Supabase (PostgreSQL) será usado como almacenamiento principal.
+
+Tablas principales:
+
+miembros (datos personales y de contacto).
+
+votos (compromisos financieros asociados a un miembro).
+
+pagos (abonos a los votos).
+
+usuarios (administradores del sistema con login seguro).
+
+🎯 Objetivo del Sistema
+
+El sistema debe permitir a los administradores de la congregación:
+
+Gestionar Miembros
+
+Registrar, editar y eliminar miembros.
+
+Consultar información de contacto.
+
+Ver el número de votos activos por cada miembro.
+
+Gestionar Votos (Compromisos Financieros)
+
+Crear un voto (propósito, monto total, fecha límite).
+
+Registrar pagos parciales (abonos).
+
+Calcular el progreso de cada voto (% recaudado vs pendiente).
+
+Identificar votos atrasados.
+
+Dashboard Administrativo
+
+Totales generales: comprometido, recaudado, pendiente.
+
+Seguimiento de top deudores.
+
+Listado de votos activos y su progreso.
+
+Alertas de próximos vencimientos.
+
+Autenticación y Roles
+
+Acceso para administradores con login (JWT / Supabase Auth).
+
+Diferentes roles: Administrador principal, colaboradores.
+
+🔧 Lineamientos Técnicos para Copilot
+
+Frontend con HTML existente #/home/juanda/ipuc-contabilidad/EJEMPLOSDISEÑO/dashboard-ipuc.html , /home/juanda/ipuc-contabilidad/EJEMPLOSDISEÑO/pantallas-miembros-ipuc.html, /home/juanda/ipuc-contabilidad/EJEMPLOSDISEÑO/dashboard-ipuc.html
+
+Usar los HTML/CSS generados desde Cloud como plantillas base.
+
+Integrar datos dinámicos con EJS / React / Vue (dependiendo de la estrategia que elija el equipo).
+
+Reemplazar datos estáticos (ej: “$15,450,000”) con valores consultados desde Supabase.
+
+Backend (Node.js / Express)
+
+Crear rutas RESTful:
+
+/miembros (GET, POST, PUT, DELETE).
+
+/votos (GET, POST, PUT, DELETE).
+
+/pagos (POST, GET).
+
+Middleware para autenticación (JWT con Supabase).
+
+Validación de datos antes de guardar en la BD.
+
+Base de Datos (Supabase)
+
+miembros: id, nombres, apellidos, cc, fecha_nacimiento, género, teléfono, email.
+
+votos: id, miembro_id, propósito, monto_total, recaudado, fecha_limite, estado.
+
+pagos: id, voto_id, monto, fecha_pago.
+
+usuarios: id, nombre_usuario, contraseña_hash, rol.
+
+Integración Supabase
+
+Usar Supabase SDK para Node.js.
+
+Todas las consultas CRUD deben conectarse directamente a las tablas mencionadas.

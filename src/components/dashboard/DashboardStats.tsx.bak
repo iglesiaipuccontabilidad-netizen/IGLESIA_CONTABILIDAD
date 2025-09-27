@@ -1,0 +1,141 @@
+'use client'
+
+import React from 'react'
+import styles from '@/styles/dashboard.module.css'
+
+interface DashboardStatsProps {
+  totalComprometido: number
+  totalRecaudado: number
+  totalPendiente: number
+  votosActivos: number
+  incrementoComprometido?: number
+  porcentajeCompletado?: number
+  porcentajePendiente?: number
+  nuevosVotos?: number
+}
+
+export default function DashboardStats({
+  totalComprometido,
+  totalRecaudado,
+  totalPendiente,
+  votosActivos,
+  incrementoComprometido = 12,
+  porcentajeCompletado = 57.7,
+  porcentajePendiente = 42.3,
+  nuevosVotos = 8
+}: DashboardStatsProps) {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
+
+'use client'
+
+import React from 'react'
+import styles from '@/styles/dashboard.module.css'
+
+interface DashboardStatsProps {
+  totalComprometido: number
+  totalRecaudado: number
+  totalPendiente: number
+  votosActivos: number
+  incrementoComprometido?: number
+  porcentajeCompletado?: number
+  porcentajePendiente?: number
+  nuevosVotos?: number
+}
+
+export default function DashboardStats({
+  totalComprometido,
+  totalRecaudado,
+  totalPendiente,
+  votosActivos,
+  incrementoComprometido = 12,
+  porcentajeCompletado = 57.7,
+  porcentajePendiente = 42.3,
+  nuevosVotos = 8
+}: DashboardStatsProps) {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
+
+  return (
+    <section className={styles.kpisSection}>
+      <div className={styles.kpiCard}>
+        <div className={styles.kpiHeader}>
+          <h3 className={styles.kpiTitle}>TOTAL COMPROMETIDO</h3>
+          <div className={styles.kpiIcon}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <p className={styles.kpiValue}>{formatCurrency(totalComprometido)}</p>
+        <div className={styles.kpiTrend}>
+          <span className={styles.trendPositive}>+{incrementoComprometido}% este mes</span>
+        </div>
+      </div>
+
+      <div className={styles.kpiCard}>
+        <div className={styles.kpiHeader}>
+          <h3 className={styles.kpiTitle}>TOTAL RECAUDADO</h3>
+          <div className={styles.kpiIcon}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <p className={styles.kpiValue}>{formatCurrency(totalRecaudado)}</p>
+        <div className={styles.kpiTrend}>
+          <span className={styles.completionRate}>{porcentajeCompletado}% completado</span>
+        </div>
+      </div>
+
+      <div className={styles.kpiCard}>
+        <div className={styles.kpiHeader}>
+          <h3 className={styles.kpiTitle}>TOTAL PENDIENTE</h3>
+          <div className={styles.kpiIcon}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <p className={styles.kpiValue}>{formatCurrency(totalPendiente)}</p>
+        <div className={styles.kpiTrend}>
+          <span className={styles.pendingRate}>{porcentajePendiente}% pendiente</span>
+        </div>
+      </div>
+
+      <div className={styles.kpiCard}>
+        <div className={styles.kpiHeader}>
+          <h3 className={styles.kpiTitle}>VOTOS ACTIVOS</h3>
+          <div className={styles.kpiIcon}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+        </div>
+        <p className={styles.kpiValue}>{votosActivos}</p>
+        <div className={styles.kpiTrend}>
+          <span className={styles.trendPositive}>+{nuevosVotos} nuevos este mes</span>
+        </div>
+      </div>
+    </section>
+  )
+            </svg>
+          </div>
+        </div>
+        <div className={styles.kpiValue}>{votosActivos}</div>
+      </div>
+    </section>
+  )
+}

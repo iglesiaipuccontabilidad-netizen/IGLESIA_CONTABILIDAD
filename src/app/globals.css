@@ -1,15 +1,61 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* --font-sans will be provided by next/font when the font variable class is applied.
+     Avoid redefining it here to prevent a circular reference. Use fallback in body font-family. */
+  
+  /* Colores del sistema */
+  --azul-oscuro: #152A55;
+  --azul-medio: #3D6AB0;
+  --celeste-claro: #8EB6E4;
+  --amarillo: #F0D447;
+  --verde-success: #22C55E;
+  --rojo-warning: #EF4444;
+  --blanco: #FFFFFF;
+  --gris-claro: #DDE5F0;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Estilos base */
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Componentes comunes */
+@layer components {
+  .icon {
+    @apply w-6 h-6 min-w-[24px];
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  
+  .btn-primary {
+    @apply bg-azul-oscuro text-white hover:bg-azul-medio;
+  }
+  
+  .btn-secondary {
+    @apply bg-gris-claro text-azul-oscuro hover:bg-celeste-claro;
+  }
+
+  /* Layouts */
+  .mainContent {
+    @apply ml-72 transition-all duration-300 ease-in-out p-8;
+  }
+
+  .mainContent.collapsed {
+    @apply ml-20;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +68,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Use the CSS variable set by next/font (e.g. via the class from Inter({ variable: '--font-sans' }))
+     and provide a sensible fallback stack if the variable is not defined. */
+  font-family: var(--font-sans, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial);
 }

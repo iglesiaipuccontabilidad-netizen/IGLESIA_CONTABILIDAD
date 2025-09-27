@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miembros - Sistema de Votos IPUC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul-oscuro: #152A55;
+            --azul-medio: #3D6AB0;
+            --blanco: #FFFFFF;
+            --amarillo: #F0D447;
+            --celeste-claro: #8EB6E4;
+            --gris-claro: #DDE5F0;
+            --verde-success: #22C55E;
+            --rojo-warning: #EF4444;
+            --gris-texto: #64748B;
+            --fondo: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--fondo);
+            color: var(--azul-oscuro);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(21, 42, 85, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: var(--blanco);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--azul-oscuro);
+            font-size: 1.2rem;
+        }
+
+        .header-title {
+            color: var(--blanco);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            color: var(--celeste-claro);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--celeste-claro);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--blanco);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--blanco);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gris-claro);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--amarillo) 0%, #E6C547 100%);
+            color: var(--azul-oscuro);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(240, 212, 71, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--azul-medio);
+            color: var(--blanco);
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--azul-oscuro);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--azul-medio);
+            border: 2px solid var(--azul-medio);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: var(--azul-medio);
+            color: var(--blanco);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--gris-claro);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%2364748B" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: 1rem center;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--azul-medio);
+            box-shadow: 0 0 0 3px rgba(61, 106, 176, 0.1);
+        }
+
+        /* Members Grid */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .member-card {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--celeste-claro);
+        }
+
+        .member-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(21, 42, 85, 0.15);
+            border-left-color: var(--azul-medio);
+        }
+
+        .member-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .member-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--celeste-claro) 100%);
+            color: var(--blanco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .member-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+            margin-bottom: 0.3rem;
+        }
+
+        .member-cedula {
+            color: var(--gris-texto);
+            font-size: 0.9rem;
+        }
+
+        .member-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .member-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .member-detail-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gris-texto);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .member-detail-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--azul-oscuro);
+        }
+
+        .member-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gris-claro);
+        }
+
+        .votos-badge {
+            background: var(--amarillo);
+            color: var(--azul-oscuro);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Profile Screen */
+        .profile-screen {
+            display: none;
+        }
+
+        .profile-screen.active {
+            display: block;
+        }
+
+        .profile-header {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            color: var(--blanco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 2.5rem;
+        }
+
+        .profile-details h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--gris-texto);
+            font-size: 1rem;
+        }
+
+        .profile-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Sections */
+        .content-sections {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .section {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(21, 42, 85, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gris-claro);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+        }
+
+        /* Voto Cards */
+        .votos-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .voto-card {
+            border: 1px solid var(--gris-claro);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .voto-card:hover {
+            border-color: var(--azul-medio);
+            box-shadow: 0 4px 15px rgba(61, 106, 176, 0.1);
+        }
+
+        .voto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .voto-proposito {
+            background: var(--amarillo);
+            color: var(--azul-oscuro);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .voto-estado {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .estado-activo {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--verde-success);
+        }
+
+        .estado-completado {
+            background: rgba(61, 106, 176, 0.1);
+            color: var(--azul-medio);
+        }
+
+        .voto-montos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .voto-monto {
+            text-align: center;
+        }
+
+        .voto-monto-label {
+            font-size: 0.8rem;
+            color: var(--gris-texto);
+            margin-bottom: 0.3rem;
+        }
+
+        .voto-monto-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+        }
+
+        .voto-progress {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gris-claro);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--verde-success) 0%, var(--celeste-claro) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--gris-texto);
+        }
+
+        .voto-fechas {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--gris-texto);
+            margin-bottom: 1rem;
+        }
+
+        .voto-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Payments Table */
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .payments-table th {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            color: var(--blanco);
+            padding: 1rem 0.8rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .payments-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .payments-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .payments-table td {
+            padding: 1rem 0.8rem;
+            border-bottom: 1px solid var(--gris-claro);
+            vertical-align: middle;
+        }
+
+        .payments-table tr:hover {
+            background: rgba(61, 106, 176, 0.05);
+        }
+
+        .payment-date {
+            font-weight: 600;
+            color: var(--azul-oscuro);
+        }
+
+        .payment-amount {
+            font-weight: 700;
+            color: var(--verde-success);
+        }
+
+        .payment-note {
+            color: var(--gris-texto);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+            .voto-montos {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .payments-table {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .member-card, .section {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        /* Hidden class for screen switching */
+        .hidden {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">IPUC</div>
+                <div>
+                    <h1 class="header-title" id="header-title">Miembros</h1>
+                    <div class="breadcrumb">
+                        <a href="#" onclick="showMembersScreen()">Dashboard</a> > <span id="breadcrumb-current">Miembros</span>
+                    </div>
+                </div>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name">Admin Principal</div>
+                    <div class="user-role">Administrador</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- PANTALLA 3: MIEMBROS -->
+        <div id="members-screen" class="members-screen">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2 class="page-title">Miembros de la Iglesia</h2>
+                <button class="btn-primary" onclick="alert('Crear nuevo miembro')">
+                    <span>➕</span> Nuevo Miembro
+                </button>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Buscar por nombre o cédula..."
+                    onkeyup="filterMembers(this.value)"
+                >
+            </div>
+
+            <!-- Members Grid -->
+            <div class="members-grid" id="members-grid">
+                <!-- Member Cards -->
+                <div class="member-card" onclick="showMemberProfile('María González', '1.234.567', '300-123-4567')">
+                    <div class="member-header">
+                        <div class="member-avatar">MG</div>
+                        <div class="member-info">
+                            <h3>María González</h3>
+                            <div class="member-cedula">CC: 1.234.567</div>
+                        </div>
+                    </div>
+                    <div class="member-details">
+                        <div class="member-detail">
+                            <div class="member-detail-label">Teléfono</div>
+                            <div class="member-detail-value">300-123-4567</div>
+                        </div>
+                        <div class="member-detail">
+                            <div class="member-detail-label">Votos Activos</div>
+                            <div class="member-detail-value">2</div>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <div class="votos-badge">2 Votos Activos</div>
+                        <button class="btn-outline">Ver Perfil</button>
+                    </div>
+                </div>
+
+                <div class="member-card" onclick="showMemberProfile('Juan Rodríguez', '9.876.543', '301-987-6543')">
+                    <div class="member-header">
+                        <div class="member-avatar">JR</div>
+                        <div class="member-info">
+                            <h3>Juan Rodríguez</h3>
+                            <div class="member-cedula">CC: 9.876.543</div>
+                        </div>
+                    </div>
+                    <div class="member-details">
+                        <div class="member-detail">
+                            <div class="member-detail-label">Teléfono</div>
+                            <div class="member-detail-value">301-987-6543</div>
+                        </div>
+                        <div class="member-detail">
+                            <div class="member-detail-label">Votos Activos</div>
+                            <div class="member-detail-value">1</div>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <div class="votos-badge">1 Voto Activo</div>
+                        <button class="btn-outline">Ver Perfil</button>
+                    </div>
+                </div>
+
+                <div class="member-card" onclick="showMemberProfile('Ana López', '5.555.555', '302-555-5555')">
+                    <div class="member-header">
+                        <div class="member-avatar">AL</div>
+                        <div class="member-info">
+                            <h3>Ana López</h3>
+                            <div class="member-cedula">CC: 5.555.555</div>
+                        </div>
+                    </div>
+                    <div class="member-details">
+                        <div class="member-detail">
+                            <div class="member-detail-label">Teléfono</div>
+                            <div class="member-detail-value">302-555-5555</div>
+                        </div>
+                        <div class="member-detail">
+                            <div class="member-detail-label">Votos Activos</div>
+                            <div class="member-detail-value">3</div>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <div class="votos-badge">3 Votos Activos</div>
+                        <button class="btn-outline">Ver Perfil</button>
+                    </div>
+                </div>
+
+                <div class="member-card" onclick="showMemberProfile('Carlos Martínez', '7.777.777', '303-777-7777')">
+                    <div class="member-header">
+                        <div class="member-avatar">CM</div>
+                        <div class="member-info">
+                            <h3>Carlos Martínez</h3>
+                            <div class="member-cedula">CC: 7.777.777</div>
+                        </div>
+                    </div>
+                    <div class="member-details">
+                        <div class="member-detail">
+                            <div class="member-detail-label">Teléfono</div>
+                            <div class="member-detail-value">303-777-7777</div>
+                        </div>
+                        <div class="member-detail">
+                            <div class="member-detail-label">Votos Activos</div>
+                            <div class="member-detail-value">1</div>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <div class="votos-badge">1 Voto Activo</div>
+                        <button class="btn-outline">Ver Perfil</button>
+                    </div>
+                </div>
+
+                <div class="member-card" onclick="showMemberProfile('Elena Castro', '4.444.444', '304-444-4444')">
+                    <div class="member-header">
+                        <div class="member-avatar">EC</div>
+                        <div class="member-info">
+                            <h3>Elena Castro</h3>
+                            <div class="member-cedula">CC: 4.444.444</div>
+                        </div>
+                    </div>
+                    <div class="member-details">
+                        <div class="member-detail">
+                            <div class="member-detail-label">Teléfono</div>
+                            <div class="member-detail-value">304-444-4444</div>
+                        </div>
+                        <div class="member-detail">
+                            <div class="member-detail-label">Votos Activos</div>
+                            <div class="member-detail-value">2</div>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <div class="votos-badge">2 Votos Activos</div>
+                        <button class="btn-outline">Ver Perfil</button>
+                    </div>
+                </div>
+
+                <div class="member-card" onclick="showMemberProfile('Pedro Sánchez', '6.666.666', '305-666-6666')">
+                    <div class="member-header">
+                        <div class="member-avatar">PS</div>
+                        <div class="member-info">
+                            <h3>Pedro Sánchez</h3>
+                            <div class="member-cedula">CC: 6.666.666</div>
+                        </div>
+                    </div>
+                    <div class="member-details">
+                        <div class="member-detail">
+                            <div class="member-detail-label">Teléfono</div>
+                            <div class="member-detail-value">305-666-6666</div>
+                        </div>
+                        <div class="member-detail">
+                            <div class="member-detail-label">Votos Activos</div>
+                            <div class="member-detail-value">1</div>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <div class="votos-badge">1 Voto Activo</div>
+                        <button class="btn-outline">Ver Perfil</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: PERFIL DEL MIEMBRO -->
+        <div id="profile-screen" class="profile-screen">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar" id="profile-avatar">MG</div>
+                    <div class="profile-details">
+                        <h1 id="profile-name">María González</h1>
+                        <div class="profile-meta">
+                            <span>📄 <span id="profile-cedula">CC: 1.234.567</span></span>
+                            <span>📞 <span id="profile-phone">300-123-4567</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn-outline" onclick="alert('Editar miembro')">
+                        ✏️ Editar
+                    </button>
+                    <button class="btn-primary" onclick="alert('Crear nuevo voto')">
+                        ➕ Nuevo Voto
+                    </button>
+                    <button class="btn-secondary" onclick="showMembersScreen()">
+                        ⬅️ Volver
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Sections -->
+            <div class="content-sections">
+                <!-- Sección A: Votos del Miembro -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">Votos del Miembro</h3>
+                    </div>
+                    <div class="votos-list">
+                        <!-- Voto 1 -->
