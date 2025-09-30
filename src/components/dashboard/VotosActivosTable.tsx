@@ -79,10 +79,16 @@ export default function VotosActivosTable({ votos }: VotosActivosTableProps) {
                 <td>{formatDate(voto.fecha_limite)}</td>
                 <td>
                   <div className={styles.tableActions}>
-                    <Link href={`/pagos/${voto.id}`} className={styles.actionButton}>
+                    <Link 
+                      href={`/dashboard/votos/${voto.id}/pago`} 
+                      className={styles.actionButton}
+                    >
                       Registrar Pago
                     </Link>
-                    <Link href={`/votos/${voto.id}`} className={styles.actionButtonSecondary}>
+                    <Link 
+                      href={`/dashboard/votos/${voto.id}`} 
+                      className={styles.actionButtonSecondary}
+                    >
                       Ver Detalles
                     </Link>
                   </div>

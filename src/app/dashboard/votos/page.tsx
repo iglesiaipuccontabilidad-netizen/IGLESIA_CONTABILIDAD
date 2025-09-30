@@ -1,9 +1,11 @@
 'use client'
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import styles from '@/styles/votos.module.css'
+import tableStyles from '@/styles/components/Table.module.css'
+import headerStyles from '@/styles/components/Header.module.css'
+import loadingStyles from '@/styles/components/Loading.module.css'
 import { Database } from '@/lib/database.types'
 
 type TablaVotos = Database['public']['Tables']['votos']['Row']
@@ -27,7 +29,7 @@ export default function VotosPage() {
     estado: ''
   })
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClient()
 
   useEffect(() => {
     cargarVotos()
@@ -92,26 +94,36 @@ export default function VotosPage() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Votos</h1>
-        <Link href="/dashboard/votos/nuevo" className={styles.btnPrimary}>
+    <div className="container">
+      <div className={headerStyles.header}>
+        <h1 className={headerStyles.title}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+            <path d="m8 12 2 2 4-4"/>
+          </svg>
+          Votos
+        </h1>
+        <Link href="/dashboard/votos/nuevo" className={headerStyles.buttonPrimary}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
           Nuevo Voto
         </Link>
       </div>
 
-      <div className={styles.filters}>
+      <div className={headerStyles.filters}>
         <input
           type="text"
           placeholder="Buscar por nombre o propósito..."
           value={filtros.busqueda}
           onChange={(e) => setFiltros(prev => ({ ...prev, busqueda: e.target.value }))}
-          className={styles.searchInput}
+          className={headerStyles.searchInput}
         />
         <select
           value={filtros.proposito}
           onChange={(e) => setFiltros(prev => ({ ...prev, proposito: e.target.value }))}
-          className={styles.select}
+          className={headerStyles.select}
         >
           <option value="">Todos los propósitos</option>
           <option value="Templo">Templo</option>
@@ -121,7 +133,7 @@ export default function VotosPage() {
         <select
           value={filtros.estado}
           onChange={(e) => setFiltros(prev => ({ ...prev, estado: e.target.value }))}
-          className={styles.select}
+          className={headerStyles.select}
         >
           <option value="">Todos los estados</option>
           <option value="activo">Activo</option>
@@ -131,10 +143,13 @@ export default function VotosPage() {
       </div>
 
       {loading ? (
-        <div className={styles.loading}>Cargando votos...</div>
+        <div className={loadingStyles.loading}>
+          <div className={loadingStyles.spinner} />
+          Cargando votos...
+        </div>
       ) : (
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
+        <div className={tableStyles.tableWrapper}>
+          <table className={tableStyles.table}>
             <thead>
               <tr>
                 <th>Miembro</th>
@@ -143,6 +158,7 @@ export default function VotosPage() {
                 <th>Monto Recaudado</th>
                 <th>Progreso</th>
                 <th>Fecha Límite</th>
+                <th>Estado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -150,42 +166,45 @@ export default function VotosPage() {
               {votosFiltrados.map(voto => (
                 <tr key={voto.id}>
                   <td>
-                    <div className={styles.memberInfo}>
-                      <span className={styles.memberName}>
+                    <div className={tableStyles.memberInfo}>
+                      <span className={tableStyles.memberName}>
                         {voto.miembro.nombres} {voto.miembro.apellidos}
                       </span>
                     </div>
                   </td>
+                  <td>{voto.proposito}</td>
+                  <td className={tableStyles.currency}>{formatearMonto(voto.monto_total)}</td>
+                  <td className={tableStyles.currency}>{formatearMonto(voto.recaudado || 0)}</td>
                   <td>
-                    <span className={styles.purpose}>{voto.proposito}</span>
-                  </td>
-                  <td>{formatearMonto(voto.monto_total)}</td>
-                  <td>{formatearMonto(voto.recaudado || 0)}</td>
-                  <td>
-                    <div className={styles.progressContainer}>
-                      <div className={styles.progressBar}>
+                    <div className={tableStyles.progressContainer}>
+                      <div className={tableStyles.progressBar}>
                         <div 
-                          className={styles.progressFill}
+                          className={tableStyles.progressFill}
                           style={{ width: `${calcularProgreso(voto.monto_total, voto.recaudado)}%` }}
                         />
                       </div>
-                      <span className={styles.progressText}>
+                      <span className={tableStyles.progressText}>
                         {calcularProgreso(voto.monto_total, voto.recaudado)}%
                       </span>
                     </div>
                   </td>
                   <td>{formatearFecha(voto.fecha_limite)}</td>
                   <td>
-                    <div className={styles.actions}>
+                    <span className={tableStyles[`badge${voto.estado.charAt(0).toUpperCase() + voto.estado.slice(1)}`]}>
+                      {voto.estado}
+                    </span>
+                  </td>
+                  <td>
+                    <div className={tableStyles.actions}>
                       <Link
                         href={`/dashboard/pagos/${voto.id}`}
-                        className={styles.btnSecondary}
+                        className={tableStyles.primaryButton}
                       >
                         Registrar Pago
                       </Link>
                       <Link
                         href={`/dashboard/votos/${voto.id}`}
-                        className={styles.btnSecondary}
+                        className={tableStyles.secondaryButton}
                       >
                         Ver Detalles
                       </Link>

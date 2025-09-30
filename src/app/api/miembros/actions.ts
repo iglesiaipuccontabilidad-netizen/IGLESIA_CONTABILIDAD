@@ -1,84 +1,80 @@
 'use server'
 
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import type { Database } from '@/lib/database.types'
+
+type MiembroInsert = Database['public']['Tables']['miembros']['Insert']
 
 export async function createMember(formData: FormData) {
-  const supabase = createServerActionClient({ cookies })
+  try {
+    const supabase = createClient()
 
-  const nombres = formData.get('nombres')?.toString()?.trim()
-  const apellidos = formData.get('apellidos')?.toString()?.trim()
-  const cedula = formData.get('cedula')?.toString()?.trim()
-  const email = formData.get('email')?.toString()?.trim()
-  const password = formData.get('password')?.toString()
-  const passwordConfirmation = formData.get('password_confirmation')?.toString()
-  const telefono = formData.get('telefono')?.toString()?.trim()
-  const fechaNacimiento = formData.get('fecha_nacimiento')?.toString()
-  const genero = formData.get('genero')?.toString()
-  const direccion = formData.get('direccion')?.toString()?.trim()
+    // Verificar sesión del usuario
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+    
+    if (sessionError) {
+      throw new Error('Error al verificar la sesión')
+    }
 
-  if (!nombres || !apellidos || !cedula || !email || !password || !telefono || !fechaNacimiento || !genero) {
-    throw new Error('Todos los campos obligatorios son requeridos')
+    if (!session) {
+      throw new Error('No hay una sesión válida')
+    }
+
+    const nombres = formData.get('nombres')?.toString()?.trim()
+    const apellidos = formData.get('apellidos')?.toString()?.trim()
+    const cedula = formData.get('cedula')?.toString()?.trim()
+    const email = formData.get('email')?.toString()?.trim() || null
+    const telefono = formData.get('telefono')?.toString()?.trim() || null
+
+    if (!nombres || !apellidos || !cedula) {
+      throw new Error('Los campos nombres, apellidos y cédula son requeridos')
+    }
+
+    // Verificar si ya existe un miembro con esa cédula
+    const { data: existingMember, error: checkError } = await supabase
+      .from('miembros')
+      .select('id')
+      .eq('cedula', cedula)
+      .single()
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      throw new Error('Error al verificar miembro existente')
+    }
+
+    if (existingMember) {
+      throw new Error('Ya existe un miembro con esa cédula')
+    }
+
+    // Crear el miembro en la base de datos
+    const datosInsertar: MiembroInsert = {
+      nombres,
+      apellidos,
+      cedula,
+      email,
+      telefono,
+      rol: 'pendiente',
+      estado: 'activo'
+    }
+
+    const { error: memberError } = await supabase
+      .from('miembros')
+      .insert([datosInsertar] as any)
+
+    if (memberError) {
+      console.error('Error al crear miembro:', memberError)
+      throw new Error('Error al crear el miembro')
+    }
+
+    // Todo salió bien
+    revalidatePath('/dashboard/miembros')
+    redirect('/dashboard/miembros')
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('Error inesperado al procesar la solicitud')
   }
-
-  if (password !== passwordConfirmation) {
-    throw new Error('Las contraseñas no coinciden')
-  }
-
-  if (password.length < 6) {
-    throw new Error('La contraseña debe tener al menos 6 caracteres')
-  }
-
-  // Verificar si ya existe un miembro con ese correo o cédula
-  const { data: existingMember, error: checkError } = await supabase
-    .from('miembros')
-    .select('id')
-    .or(`email.eq.${email},cedula.eq.${cedula}`)
-    .single()
-
-  if (checkError && checkError.code !== 'PGRST116') {
-    throw new Error('Error al verificar miembro existente')
-  }
-
-  if (existingMember) {
-    throw new Error('Ya existe un miembro con ese correo o cédula')
-  }
-
-  // Crear el usuario en Auth
-  const { data: auth, error: authError } = await supabase.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true
-  })
-
-  if (authError) {
-    throw new Error('Error al crear la cuenta de usuario')
-  }
-
-  // Insertar en tabla miembros usando la función RPC
-  const { error: memberError } = await supabase.rpc('registrar_miembro', {
-    p_id: auth.user.id,
-    p_nombres: nombres,
-    p_apellidos: apellidos,
-    p_cedula: cedula,
-    p_email: email,
-    p_telefono: telefono,
-    p_fecha_nacimiento: fechaNacimiento,
-    p_genero: genero,
-    p_direccion: direccion || null,
-    p_rol: email.includes('admin') ? 'admin' : 'pendiente',
-    p_estado: 'activo'
-  })
-
-  if (memberError) {
-    // Si hubo error, eliminar el usuario de Auth
-    await supabase.auth.admin.deleteUser(auth.user.id)
-    throw new Error('Error al crear el perfil del miembro')
-  }
-
-  // Todo salió bien
-  revalidatePath('/miembros')
-  redirect('/miembros?mensaje=Miembro registrado exitosamente')
 }

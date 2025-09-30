@@ -1,0 +1,229 @@
+/* Contenedor principal */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Encabezado de la página */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--azul-oscuro);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gris-texto);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.breadcrumbLink {
+  color: var(--azul-medio);
+  text-decoration: none;
+}
+
+.breadcrumbLink:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbSeparator {
+  color: var(--gris-texto);
+}
+
+/* Tarjeta de resumen */
+.summaryCard {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow-sm);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--azul-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+.cardSubtitle {
+  color: var(--gris-texto);
+  font-size: 0.9rem;
+}
+
+.memberInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.memberAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.memberDetails h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--azul-oscuro);
+  margin-bottom: 0.25rem;
+}
+
+.memberCedula {
+  color: var(--gris-texto);
+  font-size: 0.9rem;
+}
+
+/* Tarjeta de progreso */
+.progressCard {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow-sm);
+}
+
+.progressInfo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.progressDetail {
+  display: flex;
+  flex-direction: column;
+}
+
+.progressLabel {
+  font-size: 0.9rem;
+  color: var(--gris-texto);
+  margin-bottom: 0.5rem;
+}
+
+.progressValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--azul-oscuro);
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-light);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--verde-success) 0%, var(--celeste-claro) 100%);
+  transition: width 0.3s ease;
+}
+
+.progressBarFill.success {
+  background-color: var(--verde-success);
+}
+
+.progressBarFill.warning {
+  background-color: var(--amarillo);
+}
+
+.progressBarFill.danger {
+  background-color: var(--rojo-warning);
+}
+
+.progressBarLabel {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--azul-oscuro);
+  text-align: right;
+}
+
+/* Historial de pagos */
+.paymentsCard {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--card-shadow-sm);
+}
+
+.paymentsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.paymentsTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--azul-oscuro);
+}
+
+.paymentsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.paymentsTable th {
+  background-color: var(--bg-light);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border-light);
+  text-align: left;
+}
+
+.paymentsTable td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.paymentsTable tbody tr:hover {
+  background-color: var(--bg-light);
+}
+
+.amount {
+  font-weight: 600;
+  color: var(--verde-success);
+}
+
+.date {
+  color: var(--gris-texto);
+}

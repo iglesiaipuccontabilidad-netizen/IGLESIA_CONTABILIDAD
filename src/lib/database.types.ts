@@ -20,8 +20,7 @@ export interface Database {
           telefono: string | null
           email: string | null
           direccion: string | null
-          rol: 'admin' | 'usuario' | 'pendiente'
-          estado: 'activo' | 'inactivo'
+          fecha_ingreso: string | null
           created_at: string
           updated_at: string
         }
@@ -35,6 +34,23 @@ export interface Database {
           telefono?: string | null
           email?: string | null
           direccion?: string | null
+          fecha_ingreso?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      },
+      usuarios: {
+        Row: {
+          id: string
+          email: string | null
+          rol: 'admin' | 'usuario' | 'pendiente'
+          estado: 'activo' | 'inactivo'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email?: string | null
           rol?: 'admin' | 'usuario' | 'pendiente'
           estado?: 'activo' | 'inactivo'
           created_at?: string
@@ -67,6 +83,8 @@ export interface Database {
           estado: 'activo' | 'completado' | 'cancelado'
           created_at: string
           updated_at: string
+          creado_por: string
+          ultima_actualizacion_por: string
         }
         Insert: {
           id?: string
@@ -78,6 +96,8 @@ export interface Database {
           estado?: 'activo' | 'completado' | 'cancelado'
           created_at?: string
           updated_at?: string
+          creado_por?: string
+          ultima_actualizacion_por?: string
         }
         Update: {
           id?: string
@@ -89,6 +109,8 @@ export interface Database {
           estado?: 'activo' | 'completado' | 'cancelado'
           created_at?: string
           updated_at?: string
+          creado_por?: string
+          ultima_actualizacion_por?: string
         }
       }
       pagos: {

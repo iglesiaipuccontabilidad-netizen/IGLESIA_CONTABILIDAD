@@ -1,30 +1,64 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/context/AuthContext'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { aprobarUsuario, rechazarUsuario } from '@/app/login/actions'
 import { Database } from '@/lib/database.types'
 import { ErrorBoundary } from 'react-error-boundary'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { IconUserCircle, IconRefresh, IconUserCheck, IconUserX } from "@tabler/icons-react"
+import styles from '@/styles/components/AdminUsuarios.module.css'
+import CrearUsuarioForm from '@/components/admin/CrearUsuarioForm'
 
-type Miembro = Database['public']['Tables']['miembros']['Row']
+type Usuario = Database['public']['Tables']['usuarios']['Row']
 
-export default function GestionUsuariosPage() {
-  const [usuarios, setUsuarios] = useState<Miembro[]>([])
-  const { user, member } = useAuth()
+function UsersContent() {
+  const [usuarios, setUsuarios] = useState<Usuario[]>([])
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const { user } = useAuth()
   const supabase = createClient()
+  const router = useRouter()
 
-  // Redirigir si no es admin
-  if (!member || member.rol !== 'admin') {
-    redirect('/dashboard')
+  // Obtener el rol del usuario actual
+  const getAdminStatus = async () => {
+    if (!user?.id) {
+      setIsAuthorized(false)
+      return false
+    }
+
+    try {
+      const { data: userProfile, error } = await supabase
+        .from('usuarios')
+        .select('rol')
+        .eq('id', user.id)
+        .single<Pick<Usuario, 'rol'>>()
+      
+      if (error) {
+        console.error('Error al verificar permisos:', error)
+        setIsAuthorized(false)
+        return false
+      }
+      
+      const isAdmin = userProfile?.rol === 'admin'
+      setIsAuthorized(isAdmin)
+      return isAdmin
+      
+    } catch (error) {
+      console.error('Error al verificar permisos:', error)
+      setIsAuthorized(false)
+      return false
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  useEffect(() => {
-    const cargarUsuarios = async () => {
+  const cargarUsuarios = async () => {
+    try {
       const { data: usuarios, error } = await supabase
-        .from('miembros')
+        .from('usuarios')
         .select('*')
         .order('created_at', { ascending: false })
 
@@ -33,11 +67,30 @@ export default function GestionUsuariosPage() {
         return
       }
 
-      setUsuarios(usuarios)
+      setUsuarios(usuarios || [])
+    } catch (error) {
+      console.error('Error al cargar datos:', error)
+    }
+  }
+
+  useEffect(() => {
+    if (!user) {
+      return
     }
 
-    cargarUsuarios()
-  }, [supabase])
+    const loadData = async () => {
+      try {
+        const isAdmin = await getAdminStatus()
+        if (isAdmin) {
+          await cargarUsuarios()
+        }
+      } catch (error) {
+        console.error('Error al cargar datos:', error)
+      }
+    }
+
+    loadData()
+  }, [user])
 
   const getEstadoBadgeVariant = (rol: string, estado: string) => {
     if (estado === 'inactivo') return 'destructive'
@@ -53,28 +106,51 @@ export default function GestionUsuariosPage() {
     return <IconUserCheck className="w-4 h-4 text-green-500" />
   }
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="relative mb-8 bg-white rounded-xl shadow-sm">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-blue-500/5 rounded-xl"></div>
-        <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Gestión de Usuarios
-            </h1>
-            <p className="mt-2 text-sm text-gray-600 max-w-2xl">
-              Administra los usuarios del sistema y sus permisos
-            </p>
-          </div>
-          <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-blue-100">
-            <div className="text-sm font-medium text-blue-900">
-              Total: <span className="text-blue-600">{usuarios.length}</span> usuarios
-            </div>
-          </div>
+  const handleUserCreated = () => {
+    // Recargar la lista de usuarios
+    cargarUsuarios()
+  }
+
+  useEffect(() => {
+    if (isAuthorized === false) {
+      router.replace('/dashboard')
+    }
+  }, [isAuthorized, router])
+
+  if (isLoading || isAuthorized === null) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="p-4 rounded-lg bg-gray-50 flex items-center gap-3">
+          <svg className="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+          </svg>
+          <span className="text-sm text-gray-600">Verificando permisos...</span>
         </div>
       </div>
+    )
+  }
+  
+  if (isAuthorized === false) {
+    return null // La redirección se maneja en el useEffect
+  }
 
-      <ErrorBoundary
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1>
+          <IconUserCircle className="w-8 h-8" />
+          Gestión de Usuarios
+        </h1>
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.formSection}>
+          <CrearUsuarioForm onSuccess={handleUserCreated} />
+        </div>
+
+        <div className={styles.listSection}>
+          <ErrorBoundary
         fallback={
           <div className="rounded-lg bg-red-50 p-4 border border-red-200 animate-pulse">
             <div className="text-sm text-red-700 flex items-center gap-2">
@@ -103,12 +179,8 @@ export default function GestionUsuariosPage() {
             <thead>
               <tr className="bg-gradient-to-r from-gray-50 to-white">
                 <th className="px-6 py-4 text-left">
-                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Nombre</div>
-                  <div className="text-xs text-gray-400 mt-0.5">Información del usuario</div>
-                </th>
-                <th className="px-6 py-4 text-left">
-                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Cédula</div>
-                  <div className="text-xs text-gray-400 mt-0.5">Documento de identidad</div>
+                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</div>
+                  <div className="text-xs text-gray-400 mt-0.5">Identificador único</div>
                 </th>
                 <th className="px-6 py-4 text-left">
                   <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</div>
@@ -132,23 +204,14 @@ export default function GestionUsuariosPage() {
                       <div className="flex-shrink-0">
                         {getEstadoIcon(usuario.rol, usuario.estado)}
                       </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {usuario.nombres} {usuario.apellidos}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          ID: {usuario.id}
-                        </div>
+                      <div className="text-xs text-gray-500">
+                        {usuario.id}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{usuario.cedula}</div>
-                    <div className="text-xs text-gray-500">Documento</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{usuario.email}</div>
-                    <div className="text-xs text-gray-500">Contacto</div>
+                    <div className="text-xs text-gray-500">Correo electrónico</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
@@ -214,6 +277,9 @@ export default function GestionUsuariosPage() {
           </div>
         </div>
       </ErrorBoundary>
+        </div>
+      </div>
     </div>
   )
 }
+

@@ -1,5 +1,4 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
 import { Database } from '@/lib/database.types'
 import MemberList from '@/components/miembros/MemberList'
 import { MemberCard } from '@/components/miembros/MemberCard'
@@ -7,7 +6,7 @@ import layoutStyles from '@/styles/layout.module.css'
 import Link from 'next/link'
 
 export default async function MiembrosPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createClient();
 
   // Obtener la lista de miembros con su conteo de votos activos
   const { data: miembros, error } = await supabase

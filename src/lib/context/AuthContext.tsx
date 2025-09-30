@@ -8,7 +8,7 @@ import type { Database } from '@/lib/database.types'
 type AuthContextType = {
   user: User | null
   isLoading: boolean
-  member: Database['public']['Tables']['miembros']['Row'] | null
+  member: Database['public']['Tables']['usuarios']['Row'] | null
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [member, setMember] = useState<Database['public']['Tables']['miembros']['Row'] | null>(null)
+  const [member, setMember] = useState<Database['public']['Tables']['usuarios']['Row'] | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (user) {
           // Obtener miembro si hay usuario
           const { data: member } = await supabase
-            .from('miembros')
+            .from('usuarios')
             .select('*')
             .eq('id', user.id)
             .single()
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (session?.user) {
         const { data: member } = await supabase
-          .from('miembros')
+          .from('usuarios')
           .select('*')
           .eq('id', session.user.id)
           .single()

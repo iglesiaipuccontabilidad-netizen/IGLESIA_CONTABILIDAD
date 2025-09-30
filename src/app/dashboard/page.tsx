@@ -20,14 +20,31 @@ interface DashboardStats {
 
 async function getDashboardStats() {
   const supabase = await createClient()
-  const { data, error } = await supabase.rpc('obtener_estadisticas_dashboard')
   
-  if (error) {
-    console.error('Error al obtener estadísticas:', error)
+  // Obtener los totales de todos los votos
+  const { data: votosData, error: votosError } = await supabase
+    .from('votos')
+    .select('monto_total, recaudado')
+    .eq('estado', 'activo')
+    .returns<Array<{ monto_total: number; recaudado: number }>>()
+
+  if (votosError) {
+    console.error('Error al obtener votos:', votosError)
     throw new Error('No se pudieron obtener las estadísticas del dashboard')
   }
 
-  return data as DashboardStats
+  // Calcular las estadísticas
+  const stats: DashboardStats = {
+    total_comprometido: votosData.reduce((sum, voto) => sum + (voto.monto_total || 0), 0),
+    total_recaudado: votosData.reduce((sum, voto) => sum + (voto.recaudado || 0), 0),
+    total_pendiente: 0, // Se calcula abajo
+    votos_activos: votosData.length
+  }
+
+  // Calcular el total pendiente
+  stats.total_pendiente = stats.total_comprometido - stats.total_recaudado
+
+  return stats
 }
 
 async function getVotosActivos() {

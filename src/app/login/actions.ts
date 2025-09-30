@@ -56,36 +56,36 @@ export async function login(formData: FormData) {
       throw new Error(AUTH_ERRORS.UserNotFound)
     }
 
-    // Verificar el estado del usuario en la tabla miembros
-    type MiembroStatus = {
+    // Verificar el estado del usuario en la tabla usuarios
+    type UserStatus = {
       estado: 'activo' | 'inactivo'
       rol: 'admin' | 'usuario' | 'pendiente'
     }
 
-    const { data: miembro, error: miembroError } = await supabase
-      .from('miembros')
+    const { data: usuario, error: usuarioError } = await supabase
+      .from('usuarios')
       .select('estado, rol')
       .eq('id', user.id)
-      .single() as { data: MiembroStatus | null, error: any }
+      .single() as { data: UserStatus | null, error: any }
 
-    if (miembroError) {
-      console.error('Error al verificar estado del miembro:', miembroError)
+    if (usuarioError) {
+      console.error('Error al verificar estado del usuario:', usuarioError)
       await supabase.auth.signOut()
       throw new Error(AUTH_ERRORS.DatabaseError)
     }
 
-    if (!miembro) {
-      console.error('No se encontró el perfil del miembro')
+    if (!usuario) {
+      console.error('No se encontró el perfil del usuario')
       await supabase.auth.signOut()
       throw new Error(AUTH_ERRORS.ProfileNotFound)
     }
 
-    if (miembro.estado === 'inactivo') {
+    if (usuario.estado === 'inactivo') {
       await supabase.auth.signOut()
       throw new Error(AUTH_ERRORS.AccountInactive)
     }
 
-    if (miembro.rol === 'pendiente') {
+    if (usuario.rol === 'pendiente') {
       await supabase.auth.signOut()
       throw new Error(AUTH_ERRORS.PendingApproval)
     }
@@ -245,7 +245,7 @@ export async function aprobarUsuario(userId: string) {
     if (!user) throw new Error(AUTH_ERRORS.UserNotFound)
 
     const { data: adminCheck, error: adminError } = await (supabase as any)
-      .from('miembros')
+      .from('usuarios')
       .select('rol')
       .eq('id', user.id)
       .single()
@@ -260,15 +260,15 @@ export async function aprobarUsuario(userId: string) {
 
     // Actualizar el rol del usuario
     const { error: updateError } = await (supabase as any)
-      .from('miembros')
-      .update({ rol: 'usuario' })
+      .from('usuarios')
+      .update({ rol: 'usuario', estado: 'activo' })
       .eq('id', userId)
 
     if (updateError) {
       throw new Error(AUTH_ERRORS.DatabaseError)
     }
 
-    revalidatePath('/admin/usuarios')
+    revalidatePath('/dashboard/admin/usuarios')
   } catch (error) {
     if (error instanceof Error) {
       throw error
@@ -286,7 +286,7 @@ export async function rechazarUsuario(userId: string) {
     if (!user) throw new Error(AUTH_ERRORS.UserNotFound)
 
     const { data: adminCheck, error: adminError } = await (supabase as any)
-      .from('miembros')
+      .from('usuarios')
       .select('rol')
       .eq('id', user.id)
       .single()
@@ -301,7 +301,7 @@ export async function rechazarUsuario(userId: string) {
 
     // Actualizar el estado del usuario
     const { error: updateError } = await (supabase as any)
-      .from('miembros')
+      .from('usuarios')
       .update({ estado: 'inactivo' })
       .eq('id', userId)
 
@@ -309,7 +309,7 @@ export async function rechazarUsuario(userId: string) {
       throw new Error(AUTH_ERRORS.DatabaseError)
     }
 
-    revalidatePath('/admin/usuarios')
+    revalidatePath('/dashboard/admin/usuarios')
   } catch (error) {
     if (error instanceof Error) {
       throw error

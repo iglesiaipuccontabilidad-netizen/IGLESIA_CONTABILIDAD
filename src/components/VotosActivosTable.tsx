@@ -46,37 +46,64 @@ export default function VotosActivosTable({ votos }: VotosActivosTableProps) {
   }
 
   return (
-    <div className={styles.votosTableContainer}>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
       {votos.length === 0 ? (
-        <p>No hay votos activos que mostrar.</p>
+        <p className="p-6 text-center text-gray-500">No hay votos activos que mostrar.</p>
       ) : (
-        <table className={styles.votosTable}>
-          <thead>
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th>Propósito</th>
-              <th>Miembro</th>
-              <th>Monto Total</th>
-              <th>Recaudado</th>
-              <th>Fecha Límite</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">PropÃ³sito</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Miembro</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Monto Total</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Recaudado</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Fecha LÃ­mite</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Estado</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Acciones</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-200">
             {currentVotos.map((voto) => (
-              <tr key={voto.id}>
-                <td>{voto.proposito}</td>
-                <td>{voto.miembro.nombres} {voto.miembro.apellidos} ({voto.miembro.cedula})</td>
-                <td>{formatCurrency(voto.monto_total)}</td>
-                <td>{formatCurrency(voto.recaudado || 0)}</td>
-                <td>{formatDate(voto.fecha_limite)}</td>
-                <td>
+              <tr key={voto.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-6 py-4">
+                  <span className={styles.purpose}>{voto.proposito}</span>
+                </td>
+                <td className="px-6 py-4">
+                  <div className={styles.memberInfo}>
+                    <span className={styles.memberName}>
+                      {voto.miembro.nombres} {voto.miembro.apellidos}
+                    </span>
+                    <span className="text-sm text-gray-500">({voto.miembro.cedula})</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {formatCurrency(voto.monto_total)}
+                </td>
+                <td className="px-6 py-4">
+                  <div className={styles.progressContainer}>
+                    <div className={styles.progressBar}>
+                      <div 
+                        className={styles.progressFill} 
+                        style={{ 
+                          width: `${(voto.recaudado || 0) / voto.monto_total * 100}%` 
+                        }}
+                      />
+                    </div>
+                    <span className={styles.progressText}>
+                      {formatCurrency(voto.recaudado || 0)}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {formatDate(voto.fecha_limite)}
+                </td>
+                <td className="px-6 py-4">
                   <span className={`${styles.estadoBadge} ${styles[voto.estado]}`}>
                     {voto.estado}
                   </span>
                 </td>
-                <td>
-                  <div className={styles.actionButtons}>
+                <td className="px-6 py-4">
+                  <div className={styles.actions}>
                     <Link href={`/votos/${voto.id}`} className={styles.btnSecondary}>
                       Ver Detalles
                     </Link>

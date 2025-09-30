@@ -1,0 +1,72 @@
+.pagoContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.pagoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pagoHeader h1 {
+  font-size: 1.8rem;
+  color: #1a202c;
+  font-weight: 600;
+  margin: 0;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.backLink:hover {
+  background-color: #f7fafc;
+  color: #2d3748;
+}
+
+.pagoContent {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 2fr;
+  align-items: start;
+}
+
+.votoInfo {
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.votoInfo h2 {
+  color: #2d3748;
+  font-size: 1.2rem;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.votoInfo p {
+  margin: 0.75rem 0;
+  color: #4a5568;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+
+.votoInfo strong {
+  color: #2d3748;
+  min-width: 100px;
+  font-weight: 500;
+}

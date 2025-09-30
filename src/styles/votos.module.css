@@ -1,84 +1,293 @@
-.votosContainer {
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
   padding: 2rem;
-  background-color: var(--color-bg-secondary);
-  border-radius: 8px;
-  box-shadow: var(--shadow-elevation-low);
+  background-color: var(--bg-light);
 }
 
-.votosTitle {
-  color: var(--color-text-primary);
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
   font-size: 2rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-border);
-  padding-bottom: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-.votosTable {
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.searchInput,
+.select {
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 250px;
+}
+
+.searchInput:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--azul-medio);
+}
+
+.select {
+  min-width: 180px;
+  background-color: white;
+}
+
+.tableContainer {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow-sm);
+  overflow: hidden;
+}
+
+.table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 1.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.votosTable th,
-.votosTable td {
-  text-align: left;
-  padding: 12px 15px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.votosTable th {
-  background-color: var(--color-primary-light);
-  color: var(--color-text-on-primary);
+.table th {
+  background-color: var(--bg-light);
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border-light);
+  text-align: left;
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
-.votosTable tr:hover {
-  background-color: var(--color-bg-hover);
+.table tbody tr:hover {
+  background-color: var(--bg-light);
 }
 
-.votosTable td {
-  color: var(--color-text-secondary);
+.memberInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.actionButtons {
+.memberName {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.purpose {
+  color: var(--text-secondary);
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--border-light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  min-width: 3rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.actions {
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .btnPrimary,
 .btnSecondary {
-  padding: 8px 12px;
-  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.5rem;
 }
 
 .btnPrimary {
-  background-color: var(--color-primary);
-  color: var(--color-text-on-primary);
-  border: 1px solid var(--color-primary);
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
 }
 
 .btnPrimary:hover {
-  background-color: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-sm);
 }
 
 .btnSecondary {
-  background-color: var(--color-secondary);
-  color: var(--color-text-on-secondary);
-  border: 1px solid var(--color-secondary);
+  background: white;
+  color: var(--azul-medio);
+  border: 1px solid var(--border-light);
 }
 
 .btnSecondary:hover {
-  background-color: var(--color-secondary-dark);
-  border-color: var(--color-secondary-dark);
+  background: var(--bg-light);
+  border-color: var(--azul-medio);
+}
+
+.estadoBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+  display: inline-block;
+}
+
+.estadoBadge.activo {
+  background-color: var(--verde-success);
+}
+
+.estadoBadge.finalizado {
+  background-color: var(--gris-texto);
+}
+
+.estadoBadge.pendiente {
+  background-color: var(--amarillo);
+  color: var(--text-primary);
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+}
+
+.pagination button {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-light);
+  background: white;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+  border-color: var(--azul-medio);
+  color: var(--azul-medio);
+}
+
+.pagination button.activePage {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--border-light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  min-width: 3rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btnPrimary,
+.btnSecondary {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnPrimary {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-sm);
+}
+
+.btnSecondary {
+  background: white;
+  color: var(--azul-medio);
+  border: 1px solid var(--border-light);
+}
+
+.btnSecondary:hover {
+  background: var(--bg-light);
+  border-color: var(--azul-medio);
 }
 
 .estadoBadge {
@@ -90,16 +299,16 @@
 }
 
 .estadoBadge.activo {
-  background-color: #28a745; /* Green */
+  background-color: var(--verde-success);
 }
 
 .estadoBadge.finalizado {
-  background-color: #6c757d; /* Gray */
+  background-color: var(--gris-texto);
 }
 
 .estadoBadge.pendiente {
-  background-color: #ffc107; /* Yellow */
-  color: #343a40;
+  background-color: var(--amarillo);
+  color: var(--text-primary);
 }
 
 .votoDetalleContainer {
