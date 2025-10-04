@@ -14,7 +14,7 @@ import CrearUsuarioForm from '@/components/admin/CrearUsuarioForm'
 
 type Usuario = Database['public']['Tables']['usuarios']['Row']
 
-function UsersContent() {
+export default function Page() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(true)
