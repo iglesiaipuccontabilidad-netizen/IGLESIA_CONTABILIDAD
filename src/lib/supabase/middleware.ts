@@ -3,6 +3,13 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../database.types'
 import { getCookieValue } from './cookies'
 
+// Función auxiliar para crear redirecciones
+function createRedirect(request: NextRequest, path: string) {
+  const redirectUrl = request.nextUrl.clone()
+  redirectUrl.pathname = path
+  return NextResponse.redirect(redirectUrl)
+}
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -55,11 +62,6 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
-  // IMPORTANTE: NO ELIMINAR auth.getUser()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -70,42 +72,37 @@ export async function updateSession(request: NextRequest) {
   )
 
   // Si no hay usuario y no estamos en ruta pública, redirigir a login
-  if (!user && !isPublicRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  if (!user?.id && !isPublicRoute) {
+    return createRedirect(request, '/login')
   }
 
   // Si hay usuario y no estamos en ruta pública
-  if (user && !isPublicRoute) {
-    type MiembroInfo = Pick<Database['public']['Tables']['miembros']['Row'], 'rol' | 'estado'>
-    const { data: member, error: memberError } = await supabase
+  if (user?.id && !isPublicRoute) {
+    const userId = user.id
+
+    // Verificar si el usuario existe en la tabla de miembros
+    const { error: memberError } = await supabase
       .from('miembros')
-      .select('rol, estado')
-      .eq('id', user.id)
+      .select('id')
+      .eq('id', userId)
       .single()
 
-    const memberData = member as MiembroInfo | null
-
-    // Si hay error o el usuario no existe, cerrar sesión
-    if (memberError || !memberData) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
+    if (memberError) {
+      return createRedirect(request, '/login')
     }
 
-    // Si el usuario está inactivo o pendiente, redirigir a login
-    if (memberData.estado !== 'activo' || memberData.rol === 'pendiente') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
-    }
+    // Verificar acceso a rutas admin
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+      type UserRole = { rol: 'admin' | 'usuario' | 'pendiente' }
+      const { data: userData } = await supabase
+        .from('usuarios')
+        .select('rol')
+        .eq('id', userId)
+        .maybeSingle<UserRole>()
 
-    // Si intenta acceder a rutas admin sin ser admin
-    if (request.nextUrl.pathname.startsWith('/admin') && memberData.rol !== 'admin') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard'
-      return NextResponse.redirect(url)
+      if (!userData || userData.rol !== 'admin') {
+        return createRedirect(request, '/dashboard')
+      }
     }
   }
 
