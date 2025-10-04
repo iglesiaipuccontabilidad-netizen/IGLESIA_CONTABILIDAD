@@ -3,9 +3,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import type { Database } from '@/lib/database.types'
-
-type MiembroInsert = Database['public']['Tables']['miembros']['Insert']
 
 export async function createMember(formData: FormData) {
   try {
@@ -48,19 +45,15 @@ export async function createMember(formData: FormData) {
     }
 
     // Crear el miembro en la base de datos
-    const datosInsertar: MiembroInsert = {
-      nombres,
-      apellidos,
-      cedula,
-      email,
-      telefono,
-      rol: 'pendiente',
-      estado: 'activo'
-    }
-
     const { error: memberError } = await supabase
       .from('miembros')
-      .insert([datosInsertar] as any)
+      .insert([{
+        nombres,
+        apellidos,
+        cedula,
+        email,
+        telefono
+      }] as const)
 
     if (memberError) {
       console.error('Error al crear miembro:', memberError)
