@@ -31,7 +31,7 @@ export default async function MiembrosPage() {
       <div className={layoutStyles['page-header']}>
         <h1 className={layoutStyles['page-title']}>Miembros</h1>
         <Link 
-          href="/miembros/nuevo" 
+          href="/dashboard/miembros/nuevo" 
           className={layoutStyles['btn-primary']}
         >
           + Nuevo Miembro

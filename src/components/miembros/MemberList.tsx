@@ -31,7 +31,7 @@ export default function MemberList({ miembros, onSearch, onFilterChange }: Membe
             Gestiona los miembros de la iglesia y sus votos
           </p>
         </div>
-        <Link href="/miembros/nuevo" className={styles.btnPrimary}>
+        <Link href="/dashboard/miembros/nuevo" className={styles.btnPrimary}>
           Nuevo Miembro
         </Link>
       </div>

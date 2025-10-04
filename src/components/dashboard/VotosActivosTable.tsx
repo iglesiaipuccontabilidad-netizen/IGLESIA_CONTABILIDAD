@@ -80,7 +80,7 @@ export default function VotosActivosTable({ votos }: VotosActivosTableProps) {
                 <td>
                   <div className={styles.tableActions}>
                     <Link 
-                      href={`/dashboard/votos/${voto.id}/pago`} 
+                      href={`/dashboard/pagos/${voto.id}`} 
                       className={styles.actionButton}
                     >
                       Registrar Pago
