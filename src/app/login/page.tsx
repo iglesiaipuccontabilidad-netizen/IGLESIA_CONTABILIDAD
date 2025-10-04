@@ -3,8 +3,9 @@
 import { login } from './actions'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ErrorBoundary } from 'react-error-boundary'
+import { Suspense } from 'react'
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams()
   const mensaje = searchParams.get('mensaje')
   const router = useRouter()
@@ -85,6 +86,22 @@ export default function LoginPage() {
         </ErrorBoundary>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50">
+          <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-6 shadow-md">
+            <div className="text-center">Cargando...</div>
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   )
 }
             
