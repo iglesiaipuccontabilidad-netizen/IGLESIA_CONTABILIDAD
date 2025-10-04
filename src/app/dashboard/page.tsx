@@ -47,6 +47,21 @@ async function getDashboardStats() {
   return stats
 }
 
+interface VotoRaw {
+  id: string
+  proposito: string
+  monto_total: number
+  recaudado: number | null
+  fecha_limite: string
+  estado: 'activo' | 'completado' | 'cancelado'
+  miembro: {
+    id: string
+    nombres: string
+    apellidos: string
+    cedula: string
+  }
+}
+
 async function getVotosActivos() {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -67,6 +82,7 @@ async function getVotosActivos() {
     `)
     .eq('estado', 'activo')
     .order('fecha_limite', { ascending: true })
+    .returns<VotoRaw[]>()
 
   if (error) throw new Error('Error al obtener votos activos')
   return data
@@ -94,13 +110,11 @@ export default async function DashboardPage() {
   }
 
   // Transformar los datos para los componentes
-  const votosFormateados = (votosRaw || []).map((voto: TablaVotos & {
-    miembro: TablaMiembros
-  }): Voto => ({
+  const votosFormateados: Voto[] = (votosRaw ?? []).map((voto: VotoRaw) => ({
     id: voto.id,
     proposito: voto.proposito,
     monto: voto.monto_total,
-    recaudado: voto.recaudado || 0,
+    recaudado: voto.recaudado ?? 0,
     fecha_limite: voto.fecha_limite,
     miembro: {
       nombres: voto.miembro.nombres,
